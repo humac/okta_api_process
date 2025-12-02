@@ -28,22 +28,11 @@
       "verificationMethod": {
         "type": "ASSURANCE",
         "factorMode": "1FA",
-        "reauthenticateIn": "PT2H",
-        "constraints": [
-          {
-            "knowledge": {
-              "types": [
-                "password"
-              ],
-              "reauthenticateIn": "PT2H"
-            }
-          }
-        ]
+        "reauthenticateIn": "PT2H"
       },
-      "session": {
-        "usePersistentCookie": true,
-        "maxSessionIdleMinutes": 120,
-        "maxSessionLifetimeMinutes": 0
+      "keepMeSignedIn": {
+        "postAuth": "ALLOWED",
+        "postAuthPromptFrequency": "PT15M"
       }
     }
   }

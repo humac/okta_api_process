@@ -13,7 +13,25 @@ This project fills that gap by providing API-based management that runs after Te
 
 ## Solution
 
-This solution integrates into your existing Jenkins/UrbanCode Deploy/Velocity pipeline:
+This project provides **two approaches** for managing Okta Access Policy rules:
+
+### Approach 1: Update Existing Rules by ID (Recommended)
+**Use this when:** You have existing policy rules created by Terraform and need to add the "Keep Me Signed In" feature.
+
+- Update rules using policy ID and rule ID
+- Merges `keepMeSignedIn` configuration into existing rules
+- Supports single rule updates or bulk updates from CSV
+- **See: [KEEP_ME_SIGNED_IN_GUIDE.md](KEEP_ME_SIGNED_IN_GUIDE.md)** for detailed instructions
+
+### Approach 2: Create/Update Rules by Name
+**Use this when:** You want to manage complete rule configurations from JSON files.
+
+- Creates new rules or updates existing ones by name
+- Manages full rule configuration including conditions, actions, priority
+- Useful for deploying new rules alongside Terraform
+- Integrates into Jenkins/UrbanCode Deploy/Velocity pipeline
+
+Both approaches integrate into your existing pipeline:
 
 1. **Jenkins** - Sets up remote Terraform server
 2. **UrbanCode Deploy** - Manages variables
@@ -25,20 +43,25 @@ This solution integrates into your existing Jenkins/UrbanCode Deploy/Velocity pi
 ```
 okta_api_process/
 ├── src/
-│   ├── okta_api_client.py         # Core Okta API client
-│   └── access_policy_manager.py   # Policy rule management
+│   ├── okta_api_client.py             # Core Okta API client
+│   ├── access_policy_manager.py       # Policy rule management (by name)
+│   └── update_keepmesignedin.py       # Keep Me Signed In updater (by ID)
 ├── scripts/
-│   ├── apply_access_policies.sh   # Main deployment script
-│   └── urbancode_wrapper.sh       # UrbanCode Deploy integration
+│   ├── update_keepmesignedin.sh       # Update existing rules by ID
+│   ├── apply_access_policies.sh       # Create/update rules by name
+│   └── urbancode_wrapper.sh           # UrbanCode Deploy integration
 ├── config/
-│   ├── dev/rules/                 # Dev environment rules
-│   ├── staging/rules/             # Staging environment rules
-│   └── prod/rules/                # Production environment rules
+│   ├── policy_rule_ids.csv            # Policy/Rule ID mappings for bulk updates
+│   ├── dev/rules/                     # Dev environment rules (JSON)
+│   ├── staging/rules/                 # Staging environment rules (JSON)
+│   └── prod/rules/                    # Production environment rules (JSON)
 ├── examples/
 │   ├── access_policy_rule_keep_me_signed_in.json
-│   └── access_policy_rule_basic.json
-├── requirements.txt               # Python dependencies
-└── .env.example                   # Environment variable template
+│   ├── access_policy_rule_basic.json
+│   └── keep_me_signed_in_patch.json   # Minimal config for KMSI updates
+├── requirements.txt                   # Python dependencies
+├── KEEP_ME_SIGNED_IN_GUIDE.md         # Detailed guide for updating by ID
+└── URBANCODE_QUICKSTART.md            # UrbanCode Deploy integration guide
 ```
 
 ## Prerequisites
@@ -58,6 +81,53 @@ okta_api_process/
 Required permissions:
 - `okta.policies.manage`
 - `okta.policies.read`
+
+## Quick Start
+
+### Update Existing Rules with "Keep Me Signed In" Feature
+
+If you have existing Okta Access Policy rules and want to add the "Keep Me Signed In" feature:
+
+```bash
+# Set credentials
+export OKTA_DOMAIN="your-domain.okta.com"
+export OKTA_API_TOKEN="your_api_token"
+
+# Update a single rule by ID
+./scripts/update_keepmesignedin.sh \
+  --policy-id "00p1a2b3c4d5e6f7g8h9" \
+  --rule-id "0pr9i8h7g6f5e4d3c2b1"
+
+# Or bulk update from CSV file
+./scripts/update_keepmesignedin.sh \
+  --csv-file config/policy_rule_ids.csv
+```
+
+**📖 See [KEEP_ME_SIGNED_IN_GUIDE.md](KEEP_ME_SIGNED_IN_GUIDE.md) for complete instructions including:**
+- How to get your policy and rule IDs
+- CSV file format for bulk updates
+- Custom configuration options
+- UrbanCode Deploy integration
+
+### Create/Update Rules from JSON Files
+
+If you want to deploy complete rule configurations:
+
+```bash
+# Set credentials
+export OKTA_DOMAIN="your-domain.okta.com"
+export OKTA_API_TOKEN="your_api_token"
+
+# Apply a single rule
+./scripts/apply_access_policies.sh \
+  --policy "My Access Policy" \
+  --rule-file "examples/access_policy_rule_keep_me_signed_in.json"
+
+# Or apply all rules from a directory
+./scripts/apply_access_policies.sh \
+  --policy "My Access Policy" \
+  --rules-dir "config/prod/rules"
+```
 
 ## Installation
 

@@ -1,0 +1,7 @@
+policyId,ruleId,description
+# Lines starting with # are comments
+# Add your policy/rule ID pairs below:
+
+# Example entries (replace with your actual policy and rule IDs):
+# 00p1a2b3c4d5e6f7g8h9,0pr9i8h7g6f5e4d3c2b1,Production App Access Policy - Default Rule
+# 00p9z8y7x6w5v4u3t2s1,0pr1s2t3u4v5w6x7y8z9,Dev App Access Policy - Allow All Rule
