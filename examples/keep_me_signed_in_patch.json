@@ -1,0 +1,10 @@
+{
+  "actions": {
+    "appSignOn": {
+      "keepMeSignedIn": {
+        "postAuth": "ALLOWED",
+        "postAuthPromptFrequency": "PT15M"
+      }
+    }
+  }
+}
