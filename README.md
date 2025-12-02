@@ -97,6 +97,39 @@ Required permissions:
 - `okta.policies.manage`
 - `okta.policies.read`
 
+## Deployment Options
+
+This tool can be run in two ways:
+
+### Option 1: Container (Recommended for UCD)
+✅ **No Python dependency management** on UCD agents
+✅ **Consistent environment** across all deployments
+✅ **Easier setup** - just needs Docker or Podman
+
+```bash
+# Using Docker
+docker build -t okta-api-updater:latest .
+export OKTA_DOMAIN="dev1-ontsignin.oktapreview.com"
+export OKTA_API_TOKEN="your_token"
+export ENVIRONMENT="dev1"
+./scripts/container_update_keepmesignedin.sh
+```
+
+**📖 See [CONTAINER_DEPLOYMENT.md](CONTAINER_DEPLOYMENT.md) for:**
+- Complete container deployment guide
+- Docker, Podman, and Kubernetes examples
+- UrbanCode Deploy container integration
+- Container registry setup
+
+### Option 2: Native Python
+Requires Python 3.7+ and dependencies installed on each agent.
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
 ## Quick Start
 
 ### Update Existing Rules with "Keep Me Signed In" Feature
