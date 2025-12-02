@@ -1,7 +1,7 @@
 policyId,ruleId,description
-# Staging Environment
-# Add your Staging policy/rule ID pairs below:
+# Stage Environment (also referenced as "staging")
+# Add your Stage policy/rule ID pairs below:
 
-# Example entries (replace with your actual Staging policy and rule IDs):
-# 00pSTGPOLICY00001,0prSTGRULE0000001,Staging App Access Policy - Default Rule
-# 00pSTGPOLICY00001,0prSTGRULE0000002,Staging App Access Policy - MFA Rule
+# Example entries (replace with your actual Stage policy and rule IDs):
+# 00pSTAGEPOLICY001,0prSTAGERULE00001,Stage App Access Policy - Default Rule
+# 00pSTAGEPOLICY001,0prSTAGERULE00002,Stage App Access Policy - MFA Rule

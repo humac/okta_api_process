@@ -33,13 +33,17 @@ The script requires these environment variables:
 Create CSV files with your policy and rule IDs for each environment:
 
 ```bash
-# Directory structure
+# Directory structure (all 6 environments)
 config/
 ├── dev1/
 │   └── policy_rule_ids.csv
 ├── dev2/
 │   └── policy_rule_ids.csv
-├── staging/
+├── test1/
+│   └── policy_rule_ids.csv
+├── test2/
+│   └── policy_rule_ids.csv
+├── staging/  (also accessible as stage/)
 │   └── policy_rule_ids.csv
 └── prod/
     └── policy_rule_ids.csv
@@ -209,16 +213,41 @@ CSV File:
   config/dev2/policy_rule_ids.csv
 ```
 
-#### Staging Environment
+#### Test1 Environment
 ```
 UCD Variables:
-  pubsecure.okta.org_name = staging-ontsignin
+  pubsecure.okta.org_name = test1-ontsignin
+  pubsecure.okta.base_url = oktapreview.com
+  pubsecure.okta.api_token = <secure-token>
+  pubsecure.okta.env = test1
+
+CSV File:
+  config/test1/policy_rule_ids.csv
+```
+
+#### Test2 Environment
+```
+UCD Variables:
+  pubsecure.okta.org_name = test2-ontsignin
+  pubsecure.okta.base_url = oktapreview.com
+  pubsecure.okta.api_token = <secure-token>
+  pubsecure.okta.env = test2
+
+CSV File:
+  config/test2/policy_rule_ids.csv
+```
+
+#### Stage Environment
+```
+UCD Variables:
+  pubsecure.okta.org_name = stage-ontsignin
   pubsecure.okta.base_url = okta.com
   pubsecure.okta.api_token = <secure-token>
-  pubsecure.okta.env = staging
+  pubsecure.okta.env = stage  (or "staging" - both work)
 
 CSV File:
   config/staging/policy_rule_ids.csv
+  (also accessible via config/stage/policy_rule_ids.csv symlink)
 ```
 
 #### Production Environment
@@ -424,11 +453,200 @@ EOF
 
 Copy the output and use it to populate your CSV files.
 
-## Testing Your Setup
+## Running Locally (Outside of UCD)
 
-### Step 1: Test Locally First
+**YES!** You can absolutely run this script locally outside of UrbanCode Deploy. This is highly recommended for testing and development.
 
-Before deploying through UCD, test locally:
+### Prerequisites for Local Testing
+
+1. Python 3.7+ installed
+2. Repository cloned locally
+3. Okta API token for the environment you want to test
+
+### Method 1: Using the Standard Script (Recommended for Local Testing)
+
+This method uses the standard script with explicit environment variables:
+
+```bash
+# Clone the repository (if not already done)
+cd okta_api_process
+
+# Install dependencies
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Set environment variables for the tenant you want to test
+export OKTA_DOMAIN="dev1-ontsignin.oktapreview.com"
+export OKTA_API_TOKEN="your_dev1_api_token"
+export ENVIRONMENT="dev1"
+
+# Dry run first (recommended)
+./scripts/update_keepmesignedin.sh \
+    --csv-file "config/dev1/policy_rule_ids.csv" \
+    --dry-run
+
+# If dry run looks good, run without --dry-run
+./scripts/update_keepmesignedin.sh \
+    --csv-file "config/dev1/policy_rule_ids.csv"
+```
+
+### Method 2: Using the UCD Wrapper Locally
+
+If you want to test the UCD wrapper script locally, you need to set the UCD variable format:
+
+```bash
+# Set variables in UCD format
+export pubsecure.okta.org_name="dev1-ontsignin"
+export pubsecure.okta.base_url="oktapreview.com"
+export pubsecure.okta.api_token="your_dev1_api_token"
+export pubsecure.okta.env="dev1"
+
+# Note: Bash doesn't like dots in variable names, so use this instead:
+export pubsecure_okta_org_name="dev1-ontsignin"
+export pubsecure_okta_base_url="oktapreview.com"
+export pubsecure_okta_api_token="your_dev1_api_token"
+export pubsecure_okta_env="dev1"
+
+# Then manually construct OKTA_DOMAIN
+export OKTA_DOMAIN="${pubsecure_okta_org_name}.${pubsecure_okta_base_url}"
+export OKTA_API_TOKEN="${pubsecure_okta_api_token}"
+export ENVIRONMENT="${pubsecure_okta_env}"
+
+# Run the standard script
+./scripts/update_keepmesignedin.sh \
+    --csv-file "config/${ENVIRONMENT}/policy_rule_ids.csv" \
+    --dry-run
+```
+
+### Method 3: Direct Python Execution
+
+For even more control, run the Python script directly:
+
+```bash
+# Set environment variables
+export OKTA_DOMAIN="dev1-ontsignin.oktapreview.com"
+export OKTA_API_TOKEN="your_dev1_api_token"
+
+# Activate venv
+source venv/bin/activate
+
+# Add src to PYTHONPATH
+export PYTHONPATH="$(pwd)/src:$PYTHONPATH"
+
+# Run for a single rule
+python3 src/update_keepmesignedin.py \
+    --policy-id "00p1a2b3c4d5e6f7g8h9" \
+    --rule-id "0pr9i8h7g6f5e4d3c2b1" \
+    --dry-run
+
+# Or run for bulk update
+python3 src/update_keepmesignedin.py \
+    --csv-file "config/dev1/policy_rule_ids.csv" \
+    --dry-run
+
+# With custom configuration
+python3 src/update_keepmesignedin.py \
+    --csv-file "config/dev1/policy_rule_ids.csv" \
+    --config "examples/keep_me_signed_in_patch.json" \
+    --dry-run
+```
+
+### Local Testing Workflow (Recommended)
+
+Here's the recommended workflow for testing locally before deploying via UCD:
+
+```bash
+# 1. Get policy/rule IDs for your environment (run once per environment)
+export OKTA_DOMAIN="dev1-ontsignin.oktapreview.com"
+export OKTA_API_TOKEN="your_dev1_token"
+
+python3 << 'EOF'
+import os, sys
+sys.path.insert(0, 'src')
+from okta_api_client import OktaAPIClient
+
+client = OktaAPIClient(os.getenv('OKTA_DOMAIN'), os.getenv('OKTA_API_TOKEN'))
+policies = client.get_policies(policy_type='ACCESS_POLICY')
+
+for policy in policies:
+    print(f"\nPolicy: {policy['name']} (ID: {policy['id']})")
+    rules = client.get_policy_rules(policy['id'])
+    for rule in rules:
+        print(f"  Rule: {rule['name']} (ID: {rule['id']})")
+EOF
+
+# 2. Add the IDs to your CSV file
+# Edit config/dev1/policy_rule_ids.csv
+
+# 3. Dry run to verify
+./scripts/update_keepmesignedin.sh \
+    --csv-file "config/dev1/policy_rule_ids.csv" \
+    --dry-run
+
+# 4. Review the output carefully
+
+# 5. If it looks good, run without dry-run
+./scripts/update_keepmesignedin.sh \
+    --csv-file "config/dev1/policy_rule_ids.csv"
+
+# 6. Verify in Okta Admin Console
+# Log into dev1-ontsignin.oktapreview.com/admin
+# Check Security > Authentication Policies > Your Policy > Rule
+# Verify Keep Me Signed In settings are applied
+
+# 7. Commit the CSV file to version control
+git add config/dev1/policy_rule_ids.csv
+git commit -m "Add Dev1 policy/rule IDs for Keep Me Signed In"
+
+# 8. Now you're ready to deploy via UCD!
+```
+
+### Testing All Environments Locally
+
+You can test all 6 environments locally before deploying to UCD:
+
+```bash
+# Dev1
+export OKTA_DOMAIN="dev1-ontsignin.oktapreview.com"
+export OKTA_API_TOKEN="$DEV1_TOKEN"
+./scripts/update_keepmesignedin.sh --csv-file "config/dev1/policy_rule_ids.csv" --dry-run
+
+# Dev2
+export OKTA_DOMAIN="dev2-ontsignin.oktapreview.com"
+export OKTA_API_TOKEN="$DEV2_TOKEN"
+./scripts/update_keepmesignedin.sh --csv-file "config/dev2/policy_rule_ids.csv" --dry-run
+
+# Test1
+export OKTA_DOMAIN="test1-ontsignin.oktapreview.com"
+export OKTA_API_TOKEN="$TEST1_TOKEN"
+./scripts/update_keepmesignedin.sh --csv-file "config/test1/policy_rule_ids.csv" --dry-run
+
+# Test2
+export OKTA_DOMAIN="test2-ontsignin.oktapreview.com"
+export OKTA_API_TOKEN="$TEST2_TOKEN"
+./scripts/update_keepmesignedin.sh --csv-file "config/test2/policy_rule_ids.csv" --dry-run
+
+# Stage
+export OKTA_DOMAIN="stage-ontsignin.okta.com"
+export OKTA_API_TOKEN="$STAGE_TOKEN"
+./scripts/update_keepmesignedin.sh --csv-file "config/staging/policy_rule_ids.csv" --dry-run
+
+# Prod
+export OKTA_DOMAIN="ontsignin.okta.com"
+export OKTA_API_TOKEN="$PROD_TOKEN"
+./scripts/update_keepmesignedin.sh --csv-file "config/prod/policy_rule_ids.csv" --dry-run
+```
+
+## Testing Your Setup (UCD Deployment)
+
+### Step 1: Test Locally First (see section above)
+
+Before deploying through UCD, always test locally first using the methods described above.
+
+### Step 2: Deploy to Dev1 Environment via UCD
+
+Once local testing is successful:
 
 ```bash
 # Set your environment variables

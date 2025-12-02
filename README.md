@@ -52,6 +52,12 @@ okta_api_process/
 │   └── urbancode_wrapper.sh           # UrbanCode Deploy integration
 ├── config/
 │   ├── policy_rule_ids.csv            # Policy/Rule ID mappings for bulk updates
+│   ├── dev1/policy_rule_ids.csv       # Dev1 policy/rule IDs
+│   ├── dev2/policy_rule_ids.csv       # Dev2 policy/rule IDs
+│   ├── test1/policy_rule_ids.csv      # Test1 policy/rule IDs
+│   ├── test2/policy_rule_ids.csv      # Test2 policy/rule IDs
+│   ├── staging/policy_rule_ids.csv    # Stage policy/rule IDs (also: stage/)
+│   ├── prod/policy_rule_ids.csv       # Production policy/rule IDs
 │   ├── dev/rules/                     # Dev environment rules (JSON)
 │   ├── staging/rules/                 # Staging environment rules (JSON)
 │   └── prod/rules/                    # Production environment rules (JSON)
@@ -125,8 +131,9 @@ The wrapper automatically maps your UCD variables:
 
 **📖 See [UCD_ENVIRONMENT_VARIABLES.md](UCD_ENVIRONMENT_VARIABLES.md) for:**
 - Complete UCD integration guide with your variable naming convention
-- Step-by-step setup instructions
+- Step-by-step setup instructions for all 6 environments (Dev1, Dev2, Test1, Test2, Stage, Prod)
 - Environment-specific configuration examples
+- **Complete local testing guide** - YES, you can run this outside of UCD!
 - Troubleshooting for UCD deployments
 
 ### Create/Update Rules from JSON Files

@@ -1,0 +1,7 @@
+policyId,ruleId,description
+# Test2 Environment
+# Add your Test2 policy/rule ID pairs below:
+
+# Example entries (replace with your actual Test2 policy and rule IDs):
+# 00pTEST2POLICY001,0prTEST2RULE00001,Test2 App Access Policy - Default Rule
+# 00pTEST2POLICY001,0prTEST2RULE00002,Test2 App Access Policy - MFA Rule
