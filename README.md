@@ -52,15 +52,24 @@ okta_api_process/
 │   └── urbancode_wrapper.sh           # UrbanCode Deploy integration
 ├── config/
 │   ├── policy_rule_ids.csv            # Policy/Rule ID mappings for bulk updates
-│   ├── dev1/policy_rule_ids.csv       # Dev1 policy/rule IDs
-│   ├── dev2/policy_rule_ids.csv       # Dev2 policy/rule IDs
-│   ├── test1/policy_rule_ids.csv      # Test1 policy/rule IDs
-│   ├── test2/policy_rule_ids.csv      # Test2 policy/rule IDs
-│   ├── staging/policy_rule_ids.csv    # Stage policy/rule IDs (also: stage/)
-│   ├── prod/policy_rule_ids.csv       # Production policy/rule IDs
-│   ├── dev/rules/                     # Dev environment rules (JSON)
-│   ├── staging/rules/                 # Staging environment rules (JSON)
-│   └── prod/rules/                    # Production environment rules (JSON)
+│   ├── dev1/
+│   │   ├── policy_rule_ids.csv        # Dev1 policy/rule IDs
+│   │   └── rules/                     # Dev1 rule JSON files
+│   ├── dev2/
+│   │   ├── policy_rule_ids.csv        # Dev2 policy/rule IDs
+│   │   └── rules/                     # Dev2 rule JSON files
+│   ├── test1/
+│   │   ├── policy_rule_ids.csv        # Test1 policy/rule IDs
+│   │   └── rules/                     # Test1 rule JSON files
+│   ├── test2/
+│   │   ├── policy_rule_ids.csv        # Test2 policy/rule IDs
+│   │   └── rules/                     # Test2 rule JSON files
+│   ├── stage/
+│   │   ├── policy_rule_ids.csv        # Stage policy/rule IDs
+│   │   └── rules/                     # Stage rule JSON files
+│   └── prod/
+│       ├── policy_rule_ids.csv        # Production policy/rule IDs
+│       └── rules/                     # Production rule JSON files
 ├── examples/
 │   ├── access_policy_rule_keep_me_signed_in.json
 │   ├── access_policy_rule_basic.json
@@ -184,7 +193,7 @@ In your UrbanCode Deploy component:
    - `OKTA_DOMAIN` - Your Okta domain (e.g., `your-domain.okta.com`)
    - `OKTA_API_TOKEN` - Your Okta API token (mark as secure)
    - `POLICY_NAME` - Name of the access policy to update
-   - `ENVIRONMENT` - Environment name (dev, staging, prod)
+   - `ENVIRONMENT` - Environment name (dev1, dev2, test1, test2, stage, prod)
 
 2. **Add Component Process Step:**
    - **Step Type:** Shell
@@ -211,8 +220,11 @@ LOG_LEVEL=INFO
 ### Rule JSON Files
 
 Place your rule JSON files in the appropriate environment directory:
-- `config/dev/rules/*.json`
-- `config/staging/rules/*.json`
+- `config/dev1/rules/*.json`
+- `config/dev2/rules/*.json`
+- `config/test1/rules/*.json`
+- `config/test2/rules/*.json`
+- `config/stage/rules/*.json`
 - `config/prod/rules/*.json`
 
 ## Usage
@@ -354,7 +366,7 @@ Key settings:
 ./scripts/apply_access_policies.sh [options]
 
 Options:
-  -e, --env ENV          Environment name (dev, staging, prod)
+  -e, --env ENV          Environment name (dev1, dev2, test1, test2, stage, prod)
   -p, --policy NAME      Policy name to update (required)
   -r, --rules-dir DIR    Directory containing rule JSON files
   -f, --rule-file FILE   Single rule JSON file to apply

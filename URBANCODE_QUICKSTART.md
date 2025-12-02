@@ -31,7 +31,7 @@ Add these properties to your component (or inherit from application/environment)
 | `OKTA_DOMAIN` | String | Yes | - | Your Okta domain (e.g., `your-domain.okta.com`) |
 | `OKTA_API_TOKEN` | Secure String | Yes | - | Okta API token with policy management permissions |
 | `POLICY_NAME` | String | Yes | - | Name of the access policy to update |
-| `ENVIRONMENT` | String | Yes | `dev` | Environment name (dev, staging, prod) |
+| `ENVIRONMENT` | String | Yes | `dev1` | Environment name (dev1, dev2, test1, test2, stage, prod) |
 | `LOG_LEVEL` | String | No | `INFO` | Logging level (DEBUG, INFO, WARNING, ERROR) |
 
 **Setting Properties:**
@@ -119,11 +119,17 @@ Place your rule JSON files in the appropriate environment directory within the c
 ```
 okta_api_process/
 └── config/
-    ├── dev/
+    ├── dev1/
     │   └── rules/
     │       ├── 01_keep_me_signed_in.json
     │       └── 02_default_rule.json
-    ├── staging/
+    ├── dev2/
+    │   └── rules/
+    ├── test1/
+    │   └── rules/
+    ├── test2/
+    │   └── rules/
+    ├── stage/
     │   └── rules/
     │       └── keep_me_signed_in.json
     └── prod/

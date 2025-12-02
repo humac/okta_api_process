@@ -36,17 +36,23 @@ Create CSV files with your policy and rule IDs for each environment:
 # Directory structure (all 6 environments)
 config/
 ├── dev1/
-│   └── policy_rule_ids.csv
+│   ├── policy_rule_ids.csv
+│   └── rules/
 ├── dev2/
-│   └── policy_rule_ids.csv
+│   ├── policy_rule_ids.csv
+│   └── rules/
 ├── test1/
-│   └── policy_rule_ids.csv
+│   ├── policy_rule_ids.csv
+│   └── rules/
 ├── test2/
-│   └── policy_rule_ids.csv
-├── staging/  (also accessible as stage/)
-│   └── policy_rule_ids.csv
+│   ├── policy_rule_ids.csv
+│   └── rules/
+├── stage/
+│   ├── policy_rule_ids.csv
+│   └── rules/
 └── prod/
-    └── policy_rule_ids.csv
+    ├── policy_rule_ids.csv
+    └── rules/
 ```
 
 **Example: `config/dev1/policy_rule_ids.csv`**
@@ -246,8 +252,7 @@ UCD Variables:
   pubsecure.okta.env = stage  (or "staging" - both work)
 
 CSV File:
-  config/staging/policy_rule_ids.csv
-  (also accessible via config/stage/policy_rule_ids.csv symlink)
+  config/stage/policy_rule_ids.csv
 ```
 
 #### Production Environment
@@ -630,7 +635,7 @@ export OKTA_API_TOKEN="$TEST2_TOKEN"
 # Stage
 export OKTA_DOMAIN="stage-ontsignin.okta.com"
 export OKTA_API_TOKEN="$STAGE_TOKEN"
-./scripts/update_keepmesignedin.sh --csv-file "config/staging/policy_rule_ids.csv" --dry-run
+./scripts/update_keepmesignedin.sh --csv-file "config/stage/policy_rule_ids.csv" --dry-run
 
 # Prod
 export OKTA_DOMAIN="ontsignin.okta.com"
@@ -812,11 +817,11 @@ policyId,ruleId,description
 00pDEV2POLICY00001,0prDEV2RULE000002,Dev2 App Access Policy - MFA Rule
 ```
 
-### config/staging/policy_rule_ids.csv
+### config/stage/policy_rule_ids.csv
 ```csv
 policyId,ruleId,description
-00pSTGPOLICY00001,0prSTGRULE0000001,Staging App Access Policy - Default Rule
-00pSTGPOLICY00001,0prSTGRULE0000002,Staging App Access Policy - MFA Rule
+00pSTAGEPOLICY001,0prSTAGERULE00001,Stage App Access Policy - Default Rule
+00pSTAGEPOLICY001,0prSTAGERULE00002,Stage App Access Policy - MFA Rule
 ```
 
 ### config/prod/policy_rule_ids.csv
