@@ -1,0 +1,28 @@
+{
+  "name": "Default Access Rule",
+  "status": "ACTIVE",
+  "priority": 2,
+  "type": "ACCESS_POLICY",
+  "conditions": {
+    "network": {
+      "connection": "ANYWHERE"
+    },
+    "people": {
+      "users": {
+        "include": [
+          "EVERYONE"
+        ]
+      }
+    }
+  },
+  "actions": {
+    "appSignOn": {
+      "access": "ALLOW",
+      "verificationMethod": {
+        "type": "ASSURANCE",
+        "factorMode": "1FA",
+        "reauthenticateIn": "PT2H"
+      }
+    }
+  }
+}

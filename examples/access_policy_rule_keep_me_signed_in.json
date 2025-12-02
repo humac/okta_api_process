@@ -1,0 +1,50 @@
+{
+  "name": "Allow with Keep Me Signed In",
+  "status": "ACTIVE",
+  "priority": 1,
+  "type": "ACCESS_POLICY",
+  "conditions": {
+    "network": {
+      "connection": "ANYWHERE"
+    },
+    "people": {
+      "users": {
+        "include": [
+          "EVERYONE"
+        ]
+      }
+    },
+    "platform": {
+      "include": [
+        {
+          "type": "ANY"
+        }
+      ]
+    }
+  },
+  "actions": {
+    "appSignOn": {
+      "access": "ALLOW",
+      "verificationMethod": {
+        "type": "ASSURANCE",
+        "factorMode": "1FA",
+        "reauthenticateIn": "PT2H",
+        "constraints": [
+          {
+            "knowledge": {
+              "types": [
+                "password"
+              ],
+              "reauthenticateIn": "PT2H"
+            }
+          }
+        ]
+      },
+      "session": {
+        "usePersistentCookie": true,
+        "maxSessionIdleMinutes": 120,
+        "maxSessionLifetimeMinutes": 0
+      }
+    }
+  }
+}
