@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  okta-api-updater:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: okta-api-updater:latest
+    container_name: okta-api-updater
+    environment:
+      # Set these via .env file or export before running
+      - OKTA_DOMAIN=${OKTA_DOMAIN}
+      - OKTA_API_TOKEN=${OKTA_API_TOKEN}
+      - ENVIRONMENT=${ENVIRONMENT:-dev1}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      # Mount config directory to access CSV files
+      - ./config:/app/config:ro
+    # Override default command
+    command: ["src/update_keepmesignedin.py", "--csv-file", "/app/config/${ENVIRONMENT:-dev1}/policy_rule_ids.csv", "--dry-run"]
+
+  # Alternative service for running with custom commands
+  okta-api-shell:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: okta-api-updater:latest
+    container_name: okta-api-shell
+    environment:
+      - OKTA_DOMAIN=${OKTA_DOMAIN}
+      - OKTA_API_TOKEN=${OKTA_API_TOKEN}
+      - ENVIRONMENT=${ENVIRONMENT:-dev1}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./config:/app/config:ro
+    entrypoint: ["/bin/bash"]
+    stdin_open: true
+    tty: true
