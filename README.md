@@ -109,6 +109,26 @@ export OKTA_API_TOKEN="your_api_token"
 - Custom configuration options
 - UrbanCode Deploy integration
 
+### UrbanCode Deploy Integration with Custom Variables
+
+If you have custom UCD environment variables (e.g., `pubsecure.okta.*`), use the UCD-specific wrapper:
+
+```bash
+# In your UCD process step:
+./scripts/ucd_keepmesignedin_wrapper.sh
+```
+
+The wrapper automatically maps your UCD variables:
+- `OKTA_DOMAIN` ← `${pubsecure.okta.org_name}.${pubsecure.okta.base_url}`
+- `OKTA_API_TOKEN` ← `${pubsecure.okta.api_token}`
+- `ENVIRONMENT` ← `${pubsecure.okta.env}`
+
+**📖 See [UCD_ENVIRONMENT_VARIABLES.md](UCD_ENVIRONMENT_VARIABLES.md) for:**
+- Complete UCD integration guide with your variable naming convention
+- Step-by-step setup instructions
+- Environment-specific configuration examples
+- Troubleshooting for UCD deployments
+
 ### Create/Update Rules from JSON Files
 
 If you want to deploy complete rule configurations:
