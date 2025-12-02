@@ -1,0 +1,7 @@
+policyId,ruleId,description
+# Dev1 Environment (dev1-ontsignin.oktapreview.com)
+# Add your Dev1 policy/rule ID pairs below:
+
+# Example entries (replace with your actual Dev1 policy and rule IDs):
+# 00pDEV1POLICY00001,0prDEV1RULE000001,Dev1 App Access Policy - Default Rule
+# 00pDEV1POLICY00001,0prDEV1RULE000002,Dev1 App Access Policy - MFA Rule

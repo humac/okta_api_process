@@ -52,6 +52,12 @@ okta_api_process/
 │   └── urbancode_wrapper.sh           # UrbanCode Deploy integration
 ├── config/
 │   ├── policy_rule_ids.csv            # Policy/Rule ID mappings for bulk updates
+│   ├── dev1/policy_rule_ids.csv       # Dev1 policy/rule IDs
+│   ├── dev2/policy_rule_ids.csv       # Dev2 policy/rule IDs
+│   ├── test1/policy_rule_ids.csv      # Test1 policy/rule IDs
+│   ├── test2/policy_rule_ids.csv      # Test2 policy/rule IDs
+│   ├── staging/policy_rule_ids.csv    # Stage policy/rule IDs (also: stage/)
+│   ├── prod/policy_rule_ids.csv       # Production policy/rule IDs
 │   ├── dev/rules/                     # Dev environment rules (JSON)
 │   ├── staging/rules/                 # Staging environment rules (JSON)
 │   └── prod/rules/                    # Production environment rules (JSON)
@@ -108,6 +114,27 @@ export OKTA_API_TOKEN="your_api_token"
 - CSV file format for bulk updates
 - Custom configuration options
 - UrbanCode Deploy integration
+
+### UrbanCode Deploy Integration with Custom Variables
+
+If you have custom UCD environment variables (e.g., `pubsecure.okta.*`), use the UCD-specific wrapper:
+
+```bash
+# In your UCD process step:
+./scripts/ucd_keepmesignedin_wrapper.sh
+```
+
+The wrapper automatically maps your UCD variables:
+- `OKTA_DOMAIN` ← `${pubsecure.okta.org_name}.${pubsecure.okta.base_url}`
+- `OKTA_API_TOKEN` ← `${pubsecure.okta.api_token}`
+- `ENVIRONMENT` ← `${pubsecure.okta.env}`
+
+**📖 See [UCD_ENVIRONMENT_VARIABLES.md](UCD_ENVIRONMENT_VARIABLES.md) for:**
+- Complete UCD integration guide with your variable naming convention
+- Step-by-step setup instructions for all 6 environments (Dev1, Dev2, Test1, Test2, Stage, Prod)
+- Environment-specific configuration examples
+- **Complete local testing guide** - YES, you can run this outside of UCD!
+- Troubleshooting for UCD deployments
 
 ### Create/Update Rules from JSON Files
 

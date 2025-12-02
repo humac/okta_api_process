@@ -1,0 +1,8 @@
+policyId,ruleId,description
+# Production Environment
+# Add your Production policy/rule ID pairs below:
+
+# Example entries (replace with your actual Production policy and rule IDs):
+# 00pPRODPOLICY0001,0prPRODRULE000001,Production App Access Policy - Default Rule
+# 00pPRODPOLICY0001,0prPRODRULE000002,Production App Access Policy - MFA Rule
+# 00pPRODPOLICY0002,0prPRODRULE000003,Production Admin Access Policy - MFA Rule
