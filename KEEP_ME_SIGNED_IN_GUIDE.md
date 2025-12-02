@@ -275,10 +275,16 @@ Organize your CSV files by environment:
 
 ```
 config/
-├── dev/
-│   └── policy_rule_ids.csv       # Dev policy/rule IDs
-├── staging/
-│   └── policy_rule_ids.csv       # Staging policy/rule IDs
+├── dev1/
+│   └── policy_rule_ids.csv       # Dev1 policy/rule IDs
+├── dev2/
+│   └── policy_rule_ids.csv       # Dev2 policy/rule IDs
+├── test1/
+│   └── policy_rule_ids.csv       # Test1 policy/rule IDs
+├── test2/
+│   └── policy_rule_ids.csv       # Test2 policy/rule IDs
+├── stage/
+│   └── policy_rule_ids.csv       # Stage policy/rule IDs
 └── prod/
     └── policy_rule_ids.csv       # Production policy/rule IDs
 ```
@@ -351,7 +357,7 @@ CSV_FILE="config/${ENVIRONMENT}/policy_rule_ids.csv"
 2. **Test in dev environment first:**
    - Update rules in dev
    - Test user experience
-   - Then promote to staging/production
+   - Then promote to stage/production
 
 3. **Document your policy/rule IDs:**
    - Use descriptive descriptions in CSV files
@@ -359,7 +365,7 @@ CSV_FILE="config/${ENVIRONMENT}/policy_rule_ids.csv"
    - Update as policies/rules change
 
 4. **Use environment-specific CSV files:**
-   - Separate CSV files for dev/staging/prod
+   - Separate CSV files for all environments (dev1, dev2, test1, test2, stage, prod)
    - Different policies may exist in each environment
 
 5. **Monitor Okta System Log:**
